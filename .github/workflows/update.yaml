@@ -11,5 +11,5 @@ jobs:
 
     steps:
       - name: Show Pakackege list
-        run: awk -W version
+        run: docker run --rm -it --entrypoint dpkg edelux/dns-proxy -l|awk '/^ii/{split($2,a,":");print a[1]","$3}'
 ...
