@@ -18,18 +18,14 @@ jobs:
           sudo apt update -qq && \
           DEBIAN_FRONTEND=noninteractive sudo apt install -y j2cli gettext moreutils >/dev/null 2>&1
 
-      - name: Pakackege list
-        run: docker run --rm -i --entrypoint dpkg edelux/dns-proxy -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >package.old
+          ## list current packages version
+          docker run --rm -i --entrypoint dpkg edelux/dns-proxy -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >package.old
 
-      - name: New Package
-        run: |
+          ## list update packages version
           PKGS=$(awk -F, '{printf $1" "}' package.old)
-          export PKGS
-          echo $PKGS
-          j2 script.j2 -o script.sh
-          cat script.sh
+          export PKGS && j2 .github/templates/script.j2 -o script.sh
           docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh script.sh
 
-      - name: Show update
-        run: awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","map[$1]}' package.new package.old
+          ## show update
+          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","map[$1]}' package.new package.old
 ...
