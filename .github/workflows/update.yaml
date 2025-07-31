@@ -30,8 +30,6 @@ jobs:
           cat script.sh
           docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh script.sh
 
-      - name: Show list
-        run: |
-          echo "Installed" && cat package.old
-          echo "Current"   && cat package.new
+      - name: Show update
+        run: awk -F, 'FNR==NR {map[$1]=$2;next} map[$1]!=$2 {print $1","map[$1]}' package.new package.old
 ...
