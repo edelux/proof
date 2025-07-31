@@ -28,7 +28,7 @@ jobs:
           echo $PKGS
           j2 script.j2 -o script.sh
           cat script.sh
-          docker run --rm -i debian:testing -v $PWD:/workspace -v /workspace sh script.sh
+          docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh script.sh
 
       - name: Show list
         run: |
