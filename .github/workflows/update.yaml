@@ -20,9 +20,12 @@ jobs:
 
       - name: New Package
         run: |
-          export PKGS=$(awk -F, '{printf $1" "}' package.old)
+          PKGS=$(awk -F, '{printf $1" "}' package.old)
+          export PKGS
+          echo $PKGS
           j2 script.j2 -o script.sh
-          docker run --rm -i debian:testing -v $PWD:/workspace -v /workspace sh script.sh
+          cat script.sh
+          #docker run --rm -i debian:testing -v $PWD:/workspace -v /workspace sh script.sh
 
       - name: Show list
         run: |
