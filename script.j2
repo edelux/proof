@@ -1,0 +1,5 @@
+DEBIAN_FRONTEND=noninteractive
+
+sudo apt update -qq
+sudo apt install -y {{ PKGS }}>/dev/null 2>&1
+sudo apt list --installed 2>/dev/null | awk -F/ '/\[installed/{split($1,a,":");split($2,b," ");print a[1]","b[1]}' >package.new
