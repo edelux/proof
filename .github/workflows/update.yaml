@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Setup runner
         run: |
           sudo apt update -qq && \
@@ -25,7 +28,7 @@ jobs:
           echo $PKGS
           j2 script.j2 -o script.sh
           cat script.sh
-          #docker run --rm -i debian:testing -v $PWD:/workspace -v /workspace sh script.sh
+          docker run --rm -i debian:testing -v $PWD:/workspace -v /workspace sh script.sh
 
       - name: Show list
         run: |
