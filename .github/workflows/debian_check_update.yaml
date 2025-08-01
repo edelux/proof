@@ -23,7 +23,7 @@ jobs:
 
           ## list update packages version
           PKGS=$(awk -F, '{printf $1" "}' package.old)
-          export PKGS && j2 templates/script_debian_upgrade.j2 -o upgrade.sh
+          export PKGS && j2 .github/templates/script_debian_upgrade.j2 -o upgrade.sh
           docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh upgrade.sh
 
           ## show update
