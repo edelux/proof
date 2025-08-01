@@ -23,9 +23,13 @@ jobs:
 
           ## list update packages version
           PKGS=$(awk -F, '{printf $1" "}' package.old)
-          export PKGS && j2 .github/templates/script.j2 -o script.sh
-          docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh script.sh
+          export PKGS && j2 templates/script_debian_upgrade.j2 -o upgrade.sh
+          docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh upgrade.sh
 
           ## show update
-          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","map[$1]}' package.new package.old
+          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
+
+          ## changelog
+          # APT_NO_PAGER=1 apt changelog libc6 2>/dev/null|awk '!/^Get:/&&/^[^[:space:]]/{if(found) exit; found=1}found{print}'
+          # APT_NO_PAGER=1 apt changelog libc6 2>/dev/null|awk '!/^Get:/&&/^[^[:space:]]/{if(found) exit; found=1;line=$0;sub(/\(.*/,"",line);gsub(/[ \t]+$/, "", line);pkg=line; file=pkg".changelog";print $0>file;next}found{print $0>file}'
 ...
