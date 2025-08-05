@@ -27,8 +27,7 @@ jobs:
           docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh upgrade.sh
 
       - name: Pending updates
-          ## show update
-          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
+        run: awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
 
           ## changelog
           # APT_NO_PAGER=1 apt changelog libc6 2>/dev/null|awk '!/^Get:/&&/^[^[:space:]]/{if(found) exit; found=1}found{print}'
