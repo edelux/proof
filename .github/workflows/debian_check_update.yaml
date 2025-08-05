@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup runner
+      - name: Review updates
         run: |
           sudo apt update -qq && \
           DEBIAN_FRONTEND=noninteractive sudo apt install -y j2cli gettext moreutils >/dev/null 2>&1
@@ -26,6 +26,7 @@ jobs:
           export PKGS && j2 .github/templates/script_debian_upgrade.j2 -o upgrade.sh
           docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh upgrade.sh
 
+      - name: Pending updates
           ## show update
           awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
 
