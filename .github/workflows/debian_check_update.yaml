@@ -28,7 +28,7 @@ jobs:
 
       - name: Pending updates
         run: |
-          echo 'Package,actual,new version'
+          echo 'Package,Installed,Update'
           awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
 
           ## changelog
