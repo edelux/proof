@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Review updates
         run: |
@@ -19,17 +19,17 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -y j2cli gettext moreutils >/dev/null 2>&1
 
           ## list current packages version
-          docker run --rm -i --entrypoint dpkg edelux/dns-proxy -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >package.old
+          docker run --rm -i --entrypoint dpkg edelux/dns-proxy -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >packages.old
 
           ## list update packages version
-          PKGS=$(awk -F, '{printf $1" "}' package.old)
+          PKGS=$(awk -F, '{printf $1" "}' packages.old)
           export PKGS && j2 .github/templates/script_debian_upgrade.j2 -o upgrade.sh
-          docker run --rm -i -v $PWD:/workspace -w /workspace debian:testing sh upgrade.sh
+          docker run --rm -i -v $PWD:/workspace -w /workspace debian sh upgrade.sh
 
       - name: Pending updates
         run: |
           echo 'Package,Installed,Update'
-          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' package.new package.old |tee upgrade.csv
+          awk -F, 'FNR==NR {map[$1]=$2; next} map[$1]!=$2 {print $1","$2","map[$1]}' packages.new packages.old |tee upgrade.csv
 
           ## changelog
           # APT_NO_PAGER=1 apt changelog libc6 2>/dev/null|awk '!/^Get:/&&/^[^[:space:]]/{if(found) exit; found=1}found{print}'

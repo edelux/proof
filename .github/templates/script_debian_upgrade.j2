@@ -3,4 +3,4 @@ DEBIAN_FRONTEND=noninteractive
 apt update -qq >/dev/null 2>&1
 apt upgrade -y >/dev/null 2>&1
 apt install -y {{ PKGS }} >/dev/null 2>&1
-dpkg -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >package.new
+dpkg -l|awk '/^ii/{split($2,a,":");print a[1]","$3}' >packages.new
